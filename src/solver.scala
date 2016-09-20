@@ -1,7 +1,37 @@
+/*
+  Explanation:
+
+  The solving algorithm uses two 2d int arrays:
+  puzzle: stores the number of edges allowed around each square
+  solution.grid: stores the vertex grid that forms the edges
+
+  The grid array uses a 4-bit code to describe possible edges to
+  each neighbouring vertex, from most to least significant bit:
+  Left, Down, Right, Up.
+  1000 = 8 would mean left is the only option
+  0100 = 4 would mean down is the only option
+  0010 = 2 would mean right if the only option
+  0001 = 1 would mean up is the only option
+  0101 = 5 would mean down and right are the possible options
+  1111 = 15 would mean all four directions are possible
+  And so on.
+
+  When a vertex has been visited, it is set to the NEGATIVE of the direction
+  to the previous vertex. See below for an example of a possible solution to
+  a 2x2 puzzle
+
+  +-+-+   -4 -8 -8
+  |   |
+  + + + = -4  0 -1
+  |   |
+  +-+-+   -2 -2 -1
+
+*/
+
 
 class solver() {
 
-  private var counter = 0;
+  private var counter:Long = 0;
 
   // TODO: find a start vertex automatically
   private val xStart = 0;
@@ -106,9 +136,9 @@ class solver() {
       return false;
     }
 
+    val newPuzzle = puzzle.map(_.clone);
     if (x == xStart && y == yStart) {
       val newSolution = solution.addPoint(x, y);
-      val newPuzzle = puzzle.map(_.clone);
       if (updatePuzzle(x, y, xPrev, yPrev, vx, vy, newPuzzle) == false){
         return false;
       }
@@ -118,8 +148,6 @@ class solver() {
         return true;
       }
     }
-
-    val newPuzzle = puzzle.map(_.clone);
 
     if (updatePuzzle(x, y, xPrev, yPrev, vx, vy, newPuzzle) == false){
       return false;
